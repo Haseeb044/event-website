@@ -1,0 +1,16 @@
+body { font-family: Arial, sans-serif; background: #f0f4f8; margin: 0; }
+header { background: #1d3557; color: white; padding: 20px; text-align: center; }
+header h1 { margin: 0 0 5px; }
+header p { margin: 0; }
+.container { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; padding: 30px; }
+.card { background: white; padding: 25px; border-radius: 8px; width: 340px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+input, select, button { width: 100%; padding: 10px; margin: 8px 0; box-sizing: border-box; font-size: 14px; }
+button { background: #457b9d; color: white; border: none; cursor: pointer; border-radius: 4px; }
+button:hover { background: #1d3557; }
+.tabs { display: flex; gap: 5px; }
+.tab { background: #ddd; color: #333; }
+.tab.active { background: #1d3557; color: white; }
+.msg { font-weight: bold; margin-top: 10px; }
+.info p { margin: 6px 0; }
+.logout { background: #e63946; }
+a.btn { display: block; text-align: center; background: #2a9d8f; color: white; padding: 10px; border-radius: 4px; text-decoration: none; margin: 8px 0; }

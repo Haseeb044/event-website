@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hackathon 2026 - Register</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><h1>Hackathon Registration</h1><p>Fill in your team details</p></header>
+  <div class="container">
+    <div class="card">
+      <input id="team" placeholder="Team name">
+      <input id="university" placeholder="University">
+      <select id="track">
+        <option value="Web Development">Web Development</option>
+        <option value="AI / Machine Learning">AI / Machine Learning</option>
+        <option value="Cloud / DevOps">Cloud / DevOps</option>
+        <option value="Cyber Security">Cyber Security</option>
+      </select>
+      <input id="phone" placeholder="Phone number (optional)">
+      <button onclick="submitForm()">Register</button>
+      <a class="btn" href="/dashboard.html">Back to Dashboard</a>
+      <div id="msg" class="msg"></div>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = '/';
+
+    async function submitForm() {
+      const res = await fetch('/api/hackathon/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+        body: JSON.stringify({
+          team_name: document.getElementById('team').value,
+          university: document.getElementById('university').value,
+          track: document.getElementById('track').value,
+          phone: document.getElementById('phone').value
+        })
+      });
+      if (res.status === 401) { localStorage.removeItem('token'); window.location.href = '/'; return; }
+      const data = await res.json();
+      const el = document.getElementById('msg');
+      el.textContent = data.message;
+      el.style.color = data.success ? 'green' : 'red';
+      if (data.success) setTimeout(() => window.location.href = '/dashboard.html', 1500);
+    }
+  </script>
+</body>
+</html>

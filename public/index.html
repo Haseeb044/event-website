@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hackathon 2026 - Login</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><h1>University Hackathon 2026</h1><p>Login or create an account to register</p></header>
+  <div class="container">
+    <div class="card">
+      <div class="tabs">
+        <button id="tabLogin" class="tab active" onclick="showTab('login')">Login</button>
+        <button id="tabSignup" class="tab" onclick="showTab('signup')">Sign Up</button>
+      </div>
+
+      <div id="loginForm">
+        <input id="loginEmail" type="email" placeholder="Email">
+        <input id="loginPassword" type="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+      </div>
+
+      <div id="signupForm" style="display:none">
+        <input id="signupName" placeholder="Full name">
+        <input id="signupEmail" type="email" placeholder="Email">
+        <input id="signupPassword" type="password" placeholder="Password (min 6 characters)">
+        <button onclick="signup()">Create Account</button>
+      </div>
+
+      <div id="msg" class="msg"></div>
+    </div>
+  </div>
+
+  <script>
+    function showTab(t) {
+      document.getElementById('loginForm').style.display = t === 'login' ? 'block' : 'none';
+      document.getElementById('signupForm').style.display = t === 'signup' ? 'block' : 'none';
+      document.getElementById('tabLogin').className = 'tab' + (t === 'login' ? ' active' : '');
+      document.getElementById('tabSignup').className = 'tab' + (t === 'signup' ? ' active' : '');
+      document.getElementById('msg').textContent = '';
+    }
+    function show(text, ok) {
+      const el = document.getElementById('msg');
+      el.textContent = text;
+      el.style.color = ok ? 'green' : 'red';
+    }
+    async function signup() {
+      const res = await fetch('/api/signup', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          full_name: document.getElementById('signupName').value,
+          email: document.getElementById('signupEmail').value,
+          password: document.getElementById('signupPassword').value
+        })
+      });
+      const data = await res.json();
+      show(data.message, data.success);
+      if (data.success) showTab('login');
+    }
+    async function login() {
+      const res = await fetch('/api/login', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: document.getElementById('loginEmail').value,
+          password: document.getElementById('loginPassword').value
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        localStorage.setItem('token', data.token);
+        window.location.href = '/dashboard.html';
+      } else {
+        show(data.message, false);
+      }
+    }
+  </script>
+</body>
+</html>

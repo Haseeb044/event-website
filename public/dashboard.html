@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Hackathon 2026 - Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header><h1>Dashboard</h1><p id="welcome">Loading...</p></header>
+  <div class="container">
+    <div class="card info">
+      <h2>My Hackathon Registration</h2>
+      <div id="status">Loading...</div>
+      <a id="regBtn" class="btn" href="/register.html" style="display:none">Register for Hackathon</a>
+      <button class="logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = '/';
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = '/';
+    }
+
+    async function loadDashboard() {
+      const res = await fetch('/api/dashboard', { headers: { Authorization: 'Bearer ' + token } });
+      if (res.status === 401) return logout();
+      const data = await res.json();
+      document.getElementById('welcome').textContent = 'Welcome, ' + data.user.name + ' (' + data.user.email + ')';
+      const s = document.getElementById('status');
+      if (data.registration) {
+        const r = data.registration;
+        s.innerHTML = '<p style="color:green"><b>You are registered!</b></p>' +
+          '<p>Team: ' + r.team_name + '</p>' +
+          '<p>University: ' + r.university + '</p>' +
+          '<p>Track: ' + r.track + '</p>' +
+          '<p>Phone: ' + (r.phone || '-') + '</p>';
+      } else {
+        s.innerHTML = '<p>You have not registered for the hackathon yet.</p>';
+        document.getElementById('regBtn').style.display = 'block';
+      }
+    }
+    loadDashboard();
+  </script>
+</body>
+</html>
